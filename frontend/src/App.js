@@ -14,12 +14,17 @@ import RootLayout from './pages/Root';
 import { action as manipulateEventAction } from './components/EventForm';
 import NewsletterPage, { action as newsletterAction } from './pages/Newsletter';
 import AuthenticationPage, {action as AuthAction} from "./pages/Authentication";
+import {action as LogoutAction} from './components/Logout';
+import {checkAuth, tokenLoader} from "./util/auth";
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
+    id:'root',
     errorElement: <ErrorPage />,
+    // this will continuously listen if any child component router form has submitted.
+    loader: tokenLoader,
     children: [
       { index: true, element: <HomePage /> },
       {
@@ -45,6 +50,7 @@ const router = createBrowserRouter([
                 path: 'edit',
                 element: <EditEventPage />,
                 action: manipulateEventAction,
+                loader: checkAuth
               },
             ],
           },
@@ -52,6 +58,8 @@ const router = createBrowserRouter([
             path: 'new',
             element: <NewEventPage />,
             action: manipulateEventAction,
+            // Use loader if we want to protect any routes.
+            loader: checkAuth
           },
         ],
       },
@@ -61,9 +69,13 @@ const router = createBrowserRouter([
         action: newsletterAction,
       },
       {
-        path: '/auth',
+        path: 'auth',
         element: <AuthenticationPage />,
         action: AuthAction
+      },
+      {
+        path: 'logout',
+        action: LogoutAction
       }
     ],
   },
