@@ -25,7 +25,7 @@ export async function action({request}) {
     body: JSON.stringify(authData),
   });
 
-  if(response.status === 422 || response.status === 401) {
+  if (response.status === 422 || response.status === 401) {
     return response;
   }
 
@@ -37,7 +37,9 @@ export async function action({request}) {
   const token = resData.token;
 
   localStorage.setItem('token', token);
+  const expiration = new Date();
+  expiration.setHours(expiration.getHours() + 1);
+  localStorage.setItem('expiration', expiration.toISOString());
 
-  // manage that token returned by server.
   return redirect('/');
 }
